@@ -31,8 +31,8 @@ public class AuthUser extends Auditable {
     @Convert(converter = Status.StatusConvertor.class)
     private Status status;
 
-
-//    private Long subject_id
+    @Column
+    private Long subject_id;
 
     @Builder(builderMethodName = "childBuilder")
     public AuthUser(Long id, Timestamp createdAt, Long createdBy, Timestamp updatedAt, Long updatedBy, boolean deleted, String username, String password, String email, AuthRole role, Status status) {

@@ -16,4 +16,5 @@ public class AbstractDAO<D extends BaseDAO> {
         this.gson = new GsonBuilder().create();
         this.utils = utils;
     }
+
 }

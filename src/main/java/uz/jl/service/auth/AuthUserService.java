@@ -99,6 +99,7 @@ public class AuthUserService extends AbstractDAO<AuthUserDAO> implements Generic
                 .username(authUser.getUsername())
                 .email(authUser.getEmail())
                 .createdAt(authUser.getCreatedAt())
+                .role(authUser.getRole())
                 .build();
         Session.setSessionUser(authUserVO);
         return new Response<>(authUserVO);

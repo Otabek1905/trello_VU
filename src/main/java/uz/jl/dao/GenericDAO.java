@@ -45,11 +45,21 @@ public class GenericDAO<T, ID> implements BaseDAO {
     }
 
     public void update(T entity) {
-        save(entity);
+        Session session1 = getSession();
+        session1.beginTransaction();
+        session1.merge(entity);
+
+        session1.getTransaction().commit();
+        session1.close();
     }
 
     public T findById(ID id) {
-        return getSession().get(persistentClass, id);
+        Session session = getSession();
+        session.beginTransaction();
+        T t = session.get(persistentClass, id);
+        session.getTransaction().commit();
+        session.close();
+        return t;
     }
 
     public List<T> findAll() {

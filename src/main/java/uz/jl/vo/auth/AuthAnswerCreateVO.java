@@ -12,10 +12,11 @@ import uz.jl.vo.BaseVO;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AuthAnswerCreateVO extends AuthAnswers implements BaseVO {
+public class AuthAnswerCreateVO  implements BaseVO {
     private String variant_A;
     private String variant_B;
     private String variant_D;
     private String answer;
     private AuthTestCreateVO test;
+
 }

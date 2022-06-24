@@ -7,18 +7,23 @@ import uz.jl.configs.ApplicationContextHolder;
 import uz.jl.enums.AuthRole;
 import uz.jl.enums.TestLevel;
 import uz.jl.service.auth.AuthAnswerService;
+import uz.jl.service.auth.AuthSubjectService;
 import uz.jl.service.auth.AuthTestService;
 import uz.jl.service.auth.AuthUserService;
 import uz.jl.vo.auth.AuthAnswerCreateVO;
 import uz.jl.vo.auth.AuthTestCreateVO;
 import uz.jl.vo.auth.AuthUserCreateVO;
 import uz.jl.vo.auth.Session;
+import uz.jl.vo.auth.subject.AuthSubjectCreateVO;
+import uz.jl.vo.auth.subject.AuthSubjectUpdateVO;
+import uz.jl.vo.auth.subject.AuthSubjectVO;
 import uz.jl.vo.http.Response;
 
 import java.util.Objects;
 
 public class AuthUI {
     static AuthUserService service = ApplicationContextHolder.getBean(AuthUserService.class);
+    static AuthSubjectService subj_service = ApplicationContextHolder.getBean(AuthSubjectService.class);
     static AuthTestService testService = ApplicationContextHolder.getBean(AuthTestService.class);
     static AuthAnswerService answerService = ApplicationContextHolder.getBean(AuthAnswerService.class);
 
@@ -30,11 +35,11 @@ public class AuthUI {
         if (Objects.isNull(Session.sessionUser)) {
             BaseUtils.println("Login -> 1");
             BaseUtils.println("Register -> 2");
-        } else if (Session.sessionUser.getRole().equals(AuthRole.USER)){
+        } else if (Session.sessionUser.getRole().equals(AuthRole.USER)) {
             BaseUtils.println("\nStart quiz -> 3");
             BaseUtils.println("Settings -> 4");
             BaseUtils.println("Logout -> 0");
-        } else if (Session.sessionUser.getRole().equals(AuthRole.TEACHER)){
+        } else if (Session.sessionUser.getRole().equals(AuthRole.TEACHER)) {
             BaseUtils.println("\nSettings -> 4");
             BaseUtils.println("Test CRUD -> 5");
             BaseUtils.println("Show statistics -> 6");
@@ -152,8 +157,55 @@ public class AuthUI {
     }
 
     private void subjectCrud() {
+        BaseUtils.println("\nCreate subject -> 1");
+        BaseUtils.println("Delete subject -> 2");
+        BaseUtils.println("Update subject -> 3");
+        BaseUtils.println("Show subject list-> 4");
+        BaseUtils.println("Go back -> 0");
+
+        String choice = BaseUtils.readText("?:");
+        switch (choice) {
+            case "1" -> authUI.createSubject();
+            case "2" -> authUI.deleteSubject();
+            case "3" -> authUI.updateSubject();
+            case "4" -> authUI.getAllSubject();
+            default -> BaseUtils.println("Wrong Choice", Colors.RED);
+        }
+
 
     }
+
+    private void createSubject() {
+        AuthSubjectCreateVO vo = AuthSubjectCreateVO.builder()
+                .subjectName(BaseUtils.readText("Subject  name : "))
+                .build();
+        print_response(subj_service.create(vo));
+
+
+    }
+
+    private void getAllSubject() {
+        print_response(subj_service.getAll());
+    }
+
+    private void updateSubject() {
+        getAllSubject();
+        AuthSubjectUpdateVO vo = AuthSubjectUpdateVO.childBuilder()
+                .id(Long.parseLong(BaseUtils.readText("Please write, subject  id  to update: ")))
+                .build();
+
+        print_response(subj_service.update(vo));
+    }
+
+    private void deleteSubject() {
+        getAllSubject();
+        AuthSubjectUpdateVO vo = AuthSubjectUpdateVO.childBuilder()
+                .id(Long.parseLong(BaseUtils.readText("Please write, subject  id  to delete: ")))
+                .build();
+        print_response(subj_service.delete(vo.getId()));
+
+    }
+
 
     private void showStatistics() {
 
@@ -177,6 +229,7 @@ public class AuthUI {
                 .username(BaseUtils.readText("Enter username: "))
                 .email(BaseUtils.readText("Enter email: "))
                 .password(BaseUtils.readText("Enter password: "))
+
                 .build();
         print_response(service.create(vo));
     }

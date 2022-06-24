@@ -53,7 +53,7 @@ public class AuthTestService extends AbstractDAO<AuthTestDAO> implements Generic
         AuthTest authTest = AuthTest.childBuilder()
                 .title(vo.getTitle())
                 .level(vo.getLevel())
-                .answers(vo.getAnswers())
+//                .answers(vo.getAnswers())
                 .build();
         return new Response<>(dao.save(authTest).getId());
     }

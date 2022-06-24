@@ -1,9 +1,11 @@
 package uz.jl.configs;
 
 import uz.jl.dao.auth.AuthAnswerDAO;
+import uz.jl.dao.auth.AuthSubjectDAO;
 import uz.jl.dao.auth.AuthTestDAO;
 import uz.jl.dao.auth.AuthUserDAO;
 import uz.jl.service.auth.AuthAnswerService;
+import uz.jl.service.auth.AuthSubjectService;
 import uz.jl.service.auth.AuthTestService;
 import uz.jl.service.auth.AuthUserService;
 import uz.jl.ui.TestUI;
@@ -17,6 +19,10 @@ public class ApplicationContextHolder {
             case "AuthUserDAO" -> (T) AuthUserDAO.getInstance();
             case "BaseUtils" -> (T) BaseUtils.getInstance();
             case "AuthUserService" -> (T) AuthUserService.getInstance();
+            //Davronov Otabek
+            case "AuthSubjectDAO"->(T) AuthSubjectDAO.getInstance();
+            case "AuthSubjectService"->(T) AuthSubjectService.getInstance();
+
 //            case "TestUI" -> (T) TestUI.getInstance();
             case "AuthTestDAO" -> (T) AuthTestDAO.getInstance();
             case "AuthAnswerDAO" -> (T) AuthAnswerDAO.getInstance();

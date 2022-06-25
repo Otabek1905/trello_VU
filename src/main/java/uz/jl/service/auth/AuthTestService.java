@@ -2,15 +2,18 @@ package uz.jl.service.auth;
 
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
+import uz.jl.configs.ApplicationContextHolder;
 import uz.jl.dao.AbstractDAO;
 import uz.jl.dao.auth.AuthTestDAO;
 import uz.jl.dao.auth.AuthUserDAO;
+import uz.jl.domains.auth.AuthSubject;
 import uz.jl.domains.auth.AuthTest;
 import uz.jl.service.GenericCRUDService;
 import uz.jl.utils.BaseUtils;
 import uz.jl.vo.auth.AuthTestCreateVO;
 import uz.jl.vo.auth.AuthTestUpdateVO;
 import uz.jl.vo.auth.AuthTestVO;
+import uz.jl.vo.auth.Session;
 import uz.jl.vo.http.Response;
 
 import java.util.List;
@@ -34,27 +37,43 @@ public class AuthTestService extends AbstractDAO<AuthTestDAO> implements Generic
         return instance;
     }
 
+    private AuthTestService() {
+        super(
+                ApplicationContextHolder.getBean(AuthTestDAO.class),
+                ApplicationContextHolder.getBean(BaseUtils.class)
+        );
+    }
+
 
     public AuthTestService(AuthTestDAO dao, BaseUtils utils) {
         super(dao, utils);
     }
 
-    public AuthTestService(){
-        super(null,null);
-    }
 
     @Override
     public Response<Long> create(@NonNull AuthTestCreateVO vo) {
-        Optional<AuthTest> optionalAuthTest =  dao.findByTitle(vo.getTitle());
+        Optional<AuthTest> optionalAuthTest =  dao.findByBody(vo.getBody());
+
         if (optionalAuthTest.isPresent()) {
-            throw new RuntimeException("Test already taken");
+            throw new RuntimeException("Test already exist");
+        }
+
+        Optional<AuthSubject> subject = dao.findSubjectById(Session.sessionUser.getId());
+
+        if (subject.isEmpty()) {
+            throw new RuntimeException("Subject is not found");
         }
 
         AuthTest authTest = AuthTest.childBuilder()
-                .title(vo.getTitle())
+                .body(vo.getBody())
                 .level(vo.getLevel())
-//                .answers(vo.getAnswers())
+                .variant_A(vo.getVariant_A())
+                .variant_B(vo.getVariant_B())
+                .variant_D(vo.getVariant_D())
+                .answer(vo.getAnswer())
+                .subject(subject.get())
                 .build();
+
         return new Response<>(dao.save(authTest).getId());
     }
 

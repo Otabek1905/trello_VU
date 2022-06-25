@@ -4,8 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import uz.jl.dao.BaseDAO;
-import uz.jl.domains.auth.AuthAnswers;
 import uz.jl.vo.BaseVO;
 
 @Data

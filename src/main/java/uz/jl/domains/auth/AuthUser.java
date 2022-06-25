@@ -31,8 +31,16 @@ public class AuthUser extends Auditable {
     @Convert(converter = Status.StatusConvertor.class)
     private Status status;
 
-    @Column
-    private Long subject_id;
+    @OneToOne(mappedBy = "authUser")
+    private AuthSubject subject;
+
+//    @OneToOne(orphanRemoval = true)
+//    @JoinTable(name = "AuthSubject_authUser",
+//            joinColumns = @JoinColumn(name = "authUser_id"),
+//            inverseJoinColumns = @JoinColumn(name = "authSubject_id"))
+//    private AuthSubject authSubject;
+
+
 
     @Builder(builderMethodName = "childBuilder")
     public AuthUser(Long id, Timestamp createdAt, Long createdBy, Timestamp updatedAt, Long updatedBy, boolean deleted, String username, String password, String email, AuthRole role, Status status) {

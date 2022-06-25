@@ -18,19 +18,36 @@ import java.util.List;
 public class AuthTest extends Auditable {
 
     @Column(unique = true, nullable = false)
-    private String title;
+    private String body;
 
     @Enumerated(EnumType.STRING)
     private TestLevel level;
 
-    @OneToOne(targetEntity = AuthAnswers.class,cascade = CascadeType.ALL)
-    private AuthAnswers answers;
+    @Column(nullable = false)
+    private String variant_A;
+
+    @Column(nullable = false)
+    private String variant_B;
+
+    @Column(nullable = false)
+    private String variant_D;
+
+    @Column(nullable = false)
+    private String answer;
+
+    @ManyToOne
+    @JoinColumn(name = "subject_id")
+    private AuthSubject subject;
 
     @Builder(builderMethodName = "childBuilder")
-    public AuthTest(Long id, Timestamp createdAt, Long createdBy, Timestamp updatedAt, Long updatedBy, boolean deleted, String title, TestLevel level, AuthAnswers answers) {
+    public AuthTest(Long id, Timestamp createdAt, Long createdBy, Timestamp updatedAt, Long updatedBy, boolean deleted, String body, TestLevel level, String variant_A, String variant_B, String variant_D, String answer, AuthSubject subject) {
         super(id, createdAt, createdBy, updatedAt, updatedBy, deleted);
-        this.title = title;
+        this.body = body;
         this.level = level;
-        this.answers = answers;
+        this.variant_A = variant_A;
+        this.variant_B = variant_B;
+        this.variant_D = variant_D;
+        this.answer = answer;
+        this.subject = subject;
     }
 }

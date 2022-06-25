@@ -46,9 +46,11 @@ public class AuthSubjectService extends AbstractDAO<AuthSubjectDAO> implements G
     public Response<Long> create(@NonNull AuthSubjectCreateVO vo) {
 
         Optional<AuthSubject> optionalAuthSubject = dao.findBySubjectName(vo.getSubjectName());
+
         if (optionalAuthSubject.isPresent()) {
             throw new RuntimeException("Subject already exist");
         }
+
         AuthSubject authSubject = AuthSubject
                 .childBuilder()
                 .subject_name(vo.getSubjectName())

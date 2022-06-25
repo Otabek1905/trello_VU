@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import uz.jl.dao.GenericDAO;
+import uz.jl.domains.auth.AuthSubject;
 import uz.jl.domains.auth.AuthTest;
 import uz.jl.domains.auth.AuthUser;
 
@@ -22,14 +23,26 @@ public class AuthTestDAO extends GenericDAO<AuthTest, Long> {
         return instance;
     }
 
-    public Optional<AuthTest> findByTitle(String title) {
+    public Optional<AuthTest> findByBody(String body) {
         Session session = getSession();
         session.beginTransaction();
         Query<AuthTest> query = session
-                .createQuery("select t from AuthTest t where lower(t.title) = lower(:title) ",
+                .createQuery("select t from AuthTest t where lower(t.body) = lower(:body) ",
                         AuthTest.class);
-        query.setParameter("title", title);
+        query.setParameter("body", body);
         Optional<AuthTest> result = Optional.ofNullable(query.getSingleResultOrNull());
+        session.close();
+        return result;
+    }
+
+    public Optional<AuthSubject> findSubjectById(Long id) {
+        Session session = getSession();
+        session.beginTransaction();
+        Query<AuthSubject> query = session
+                .createQuery("select t from AuthSubject t where t.authUser.id = :id ",
+                        AuthSubject.class);
+        query.setParameter("id", id);
+        Optional<AuthSubject> result = Optional.ofNullable(query.getSingleResultOrNull());
         session.close();
         return result;
     }

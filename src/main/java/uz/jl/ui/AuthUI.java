@@ -6,17 +6,14 @@ import uz.jl.Colors;
 import uz.jl.configs.ApplicationContextHolder;
 import uz.jl.enums.AuthRole;
 import uz.jl.enums.TestLevel;
-import uz.jl.service.auth.AuthAnswerService;
 import uz.jl.service.auth.AuthSubjectService;
 import uz.jl.service.auth.AuthTestService;
 import uz.jl.service.auth.AuthUserService;
-import uz.jl.vo.auth.AuthAnswerCreateVO;
 import uz.jl.vo.auth.AuthTestCreateVO;
 import uz.jl.vo.auth.AuthUserCreateVO;
 import uz.jl.vo.auth.Session;
 import uz.jl.vo.auth.subject.AuthSubjectCreateVO;
 import uz.jl.vo.auth.subject.AuthSubjectUpdateVO;
-import uz.jl.vo.auth.subject.AuthSubjectVO;
 import uz.jl.vo.http.Response;
 
 import java.util.Objects;
@@ -25,7 +22,6 @@ public class AuthUI {
     static AuthUserService service = ApplicationContextHolder.getBean(AuthUserService.class);
     static AuthSubjectService subj_service = ApplicationContextHolder.getBean(AuthSubjectService.class);
     static AuthTestService testService = ApplicationContextHolder.getBean(AuthTestService.class);
-    static AuthAnswerService answerService = ApplicationContextHolder.getBean(AuthAnswerService.class);
 
     static AuthUI authUI = new AuthUI();
 
@@ -104,17 +100,19 @@ public class AuthUI {
     }
 
     private void createTest() {
-        String title = BaseUtils.readText("Enter body : ");
+        String body = BaseUtils.readText("Enter body : ");
 
         BaseUtils.println("EASY -> 1");
         BaseUtils.println("MEDIUM -> 2");
         BaseUtils.println("HARD -> 3");
-        String level = BaseUtils.readText("Choose level");
-        switch (level) {
-            case "1" -> level = TestLevel.EASY.name();
-            case "2" -> level = TestLevel.MEDIUM.name();
-            case "3" -> level = TestLevel.HARD.name();
-            default -> level = TestLevel.MEDIUM.name();
+        TestLevel level;
+
+        String choice = BaseUtils.readText("Choose level");
+        switch (choice) {
+            case "1" -> level = TestLevel.EASY;
+            case "2" -> level = TestLevel.MEDIUM;
+            case "3" -> level = TestLevel.HARD;
+            default -> level = TestLevel.MEDIUM;
         }
 
         String variant_A = BaseUtils.readText("Enter variant A : ");
@@ -133,23 +131,15 @@ public class AuthUI {
         }
 
         AuthTestCreateVO testVO = AuthTestCreateVO.builder()
-                .title(title)
-                .level(TestLevel.valueOf(level))
-                .build();
-
-        AuthAnswerCreateVO answerVO = AuthAnswerCreateVO.builder()
+                .body(body)
+                .level(level)
                 .variant_A(variant_A)
                 .variant_B(variant_B)
                 .variant_D(variant_D)
                 .answer(answer)
                 .build();
 
-        testVO.setAnswers(answerVO);
-        answerVO.setTest(testVO);
-
-
         print_response(testService.create(testVO));
-        print_response(answerService.create(answerVO));
     }
 
     private void changeRole() {
